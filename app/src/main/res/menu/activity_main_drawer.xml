@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_places"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="Mis lugares" />
+        <item
+            android:id="@+id/nav_create"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="Crear lugar" />
+        <item
+            android:id="@+id/nav_switch"
+            android:icon="@android:drawable/ic_menu_mapmode"
+            android:title="Ver mapa"
+            app:actionLayout="@layout/menu_switch"
+            />
+
+    </group>
+
+    <item android:title="Perfil">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_menu_close_clear_cancel"
+                android:title="Cerrar sesión" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">MultiPlace</string>
+
+    <string name="facebook_app_id">350585945301822</string>
+
+    <!-- Strings related to Register and login-->
+    <string name="prompt_email">Correo electrónico</string>
+    <string name="prompt_email_confirm">Confirmar correo</string>
+    <string name="prompt_title">Título del lugar</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="prompt_password_confirm">Confirmar contraseña</string>
+    <string name="action_facebook">Registro con Facebook</string>
+    <string name="action_facebook_login">Iniciar con Facebook</string>
+    <string name="action_sign_in">Regístrate</string>
+    <string name="action_log_in">Iniciar sesión</string>
+    <string name="action_sign_in_short">Registro</string>
+    <string name="action_log_in_short">Iniciar</string>
+    <string name="action_create">Guardar lugar</string>
+    <string name="action_image">Añadir imagen</string>
+
+    <string name="error_invalid_email">Correo inválido</string>
+    <string name="error_missmatch_email">Correos no coinciden</string>
+    <string name="error_missmatch_password">Contraseñas no coinciden</string>
+    <string name="error_invalid_password">Contraseña inválida</string>
+    <string name="error_incorrect_password">Contraseña incorrecta</string>
+    <string name="error_field_required">Este campo es requerido</string>
+    <string name="permission_rationale">"No es posible dar sugerencias de correo"</string>
+    <string name="success_login">Login correcto</string>
+    <string name="success_register">Registro exitoso</string>
+    <string name="link_login_in">¿Ya tienes una cuenta?</string>
+
+    <string name="double_back_exit">Presiona nuevamente para salir</string>
+
+    <string name="error_gps_disabled">GPS desactivado</string>
+    <string name="error_gps_disabled_msg">Por favor activa el GPS de tu dispositivo para continuar</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="prompt_logout">¿Desea cerrar sesión?</string>
+    <string name="title_image">Añadir imagen</string>
+    <string name="msg_image">¿Desde qué lugar deseas añadir la imagen?</string>
+
+</resources>
