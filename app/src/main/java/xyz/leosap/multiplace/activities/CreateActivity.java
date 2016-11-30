@@ -118,11 +118,12 @@ public class CreateActivity extends AppCompatActivity {
             //return;
         }
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        log.d("LS LatLng last", "" + latitude + "," + longitude);
-
+        if(location!=null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+            log.d("LS LatLng last", "" + latitude + "," + longitude);
+        }
 
     }
 
