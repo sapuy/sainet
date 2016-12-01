@@ -3,14 +3,10 @@ package xyz.leosap.multiplace.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,42 +14,27 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -64,13 +45,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import xyz.leosap.multiplace.R;
+import xyz.leosap.multiplace.adapters.adapterCardView;
 import xyz.leosap.multiplace.common.Constants;
 import xyz.leosap.multiplace.common.Functions;
 
@@ -86,6 +65,7 @@ public class CreateActivity extends AppCompatActivity {
     private final int pick_photo = 666;
     private final int take_photo = 777;
 
+    LocationManager lm;
     private View vw_progress;
     private View vw_container;
     private Bitmap bitmap;
@@ -94,9 +74,7 @@ public class CreateActivity extends AppCompatActivity {
     private boolean image_taken = false;
     Uri imageContent;
     private EditText et_place;
-    private LoginButton loginButton;
-    private CallbackManager callbackManager;
-    GoogleApiClient mGoogleApiClient;
+
 
 
     @Override
@@ -111,19 +89,7 @@ public class CreateActivity extends AppCompatActivity {
         iv_thumb = (ImageView) findViewById(R.id.iv_thumb);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //GPS
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            //return;
-        }
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location!=null) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-            log.d("LS LatLng last", "" + latitude + "," + longitude);
-        }
 
     }
 
@@ -167,7 +133,24 @@ public class CreateActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         Functions.requestGPSEnabled(CreateActivity.this);
+        startGPS();
         super.onResume();
+    }
+    private void startGPS(){
+        //GPS
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            //return;
+        }
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+
+            log.d("LS LatLng last", "" + latitude + "," + longitude);
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
     }
 
     public void onClick(View v) {
@@ -193,10 +176,15 @@ public class CreateActivity extends AppCompatActivity {
                         .show();
                 break;
             case R.id.bt_create:
+                et_place.setError(null);
 
                 if (TextUtils.isEmpty(et_place.getText().toString().trim())) {
                     et_place.setError(getString(R.string.error_field_required));
                     et_place.requestFocus();
+                    return;
+                }
+                if (!image_taken) {
+                    Snackbar.make(vw_container, "Debes tomar o seleccionar una foto", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 try {
@@ -272,6 +260,7 @@ public class CreateActivity extends AppCompatActivity {
                     Log.d("LS error", responseString);
 
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject object) {
                     Functions.showProgress(false, getApplicationContext(), vw_container, vw_progress);
@@ -289,8 +278,26 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        lm.removeUpdates(locationListener);
+        super.onPause();
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        image_taken=true;
 
         Picasso picasso = new Picasso.Builder(this).listener(new Picasso.Listener() {
             @Override

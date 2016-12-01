@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:text=""
         android:checked="true"
+        android:onClick="onClick"
         android:thumbTint="@color/colorAccent" />
 
 </RelativeLayout>

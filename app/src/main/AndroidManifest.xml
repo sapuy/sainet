@@ -29,7 +29,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCO6k7MlEwUi9d_h12NF54b0sbg_4MDk18"/>
+            android:value="AIzaSyCO6k7MlEwUi9d_h12NF54b0sbg_4MDk18" />
 
 
         <activity
@@ -59,7 +59,9 @@
             android:label="Mis lugares"
             android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.SplashActivity">
+        <activity
+            android:name=".activities.SplashActivity"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
